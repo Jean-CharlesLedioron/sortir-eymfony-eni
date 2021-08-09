@@ -1,12 +1,12 @@
 <nav>
     <ul>
-        <li><a href="{{ path('#') }}" title="Home">Accueil</a></li>
-        <li><a href="{{ path('#') }}" title="Profil">Mon Profil</a></li>
-        <li><a href="{{ path('#') }}" title="All series">Se déconnecter</a></li>
+        <li><a href="#" title="Home">Accueil</a></li>
+        <li><a href="#" title="Profil">Mon Profil</a></li>
+        <li><a href="#" title="All series">Se déconnecter</a></li>
         {% if app.user %}
             {% if is_granted("ROLE_ADMIN") %}
-                <li><a href="{{ path('#') }}" title="City">Villes</a></li>
-                <li><a href="{{ path('#') }}" title="Campus">Campus</a></li>
+                <li><a href="#" title="City">Villes</a></li>
+                <li><a href="#" title="Campus">Campus</a></li>
             {% endif %}
         {% endif %}
     </ul>
