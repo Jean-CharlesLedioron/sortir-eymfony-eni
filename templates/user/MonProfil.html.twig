@@ -5,11 +5,16 @@
 {% endblock %}
 
 {% block body %}
-    <div>
-        {{ form_start(participantForm) }}
-        {{ form_widget(participantForm) }}
-        <button>Enregister</button>
-        <button>Annuler</button>
-        {{ form_end(participantForm) }}
+    <div class="container">
+        <div class="d-flex flex-column align-items-center">
+            <h1 class="flex-row">Mon Profil</h1>
+            <div class="flex-row">
+                {{ form_start(participantForm) }}
+                {{ form_widget(participantForm) }}
+                <button>Enregister</button>
+                <button>Annuler</button>
+                {{ form_end(participantForm) }}
+            </div>
+        </div>
     </div>
 {% endblock %}

@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Participant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
+use phpDocumentor\Reflection\Types\Integer;
 
 /**
  * @method Participant|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +21,26 @@ class ParticipantRepository extends ServiceEntityRepository
         parent::__construct($registry, Participant::class);
     }
 
-    // /**
-    //  * @return Participant[] Returns an array of Participant objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Participant
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+    /*public function updateById(Participant $participant){
+        $queryBulder = $this->createQueryBuilder();
+        $query = $queryBulder -> update('Participant','p')
+                -> set('p.nom',':nom')
+                -> set('p.prenom',':prenom')
+                -> set('p.pseudo',':pseudo')
+                -> set('p.telephone',':telephone')
+                -> set('p.mail',':mail')
+                -> set('p.mot_passe',':mot_passe')
+                -> set('p.campus_id',':campus_id')
+                -> where('p.id = :id')
+                -> setParameter('nom',$participant->getNom())
+                -> setParameter('prenom',$participant->getPrenom())
+                -> setParameter('pseudo',$participant->getPseudo())
+                -> setParameter('telephone',$participant->getTelephone())
+                -> setParameter('mail',$participant->getMail())
+                -> setParameter('mot_passe',$participant->getMotPasse())
+                -> setParameter('campus_id',$participant->getCampus())
+                -> getQuery();
+        $result = $query -> execute();
+        return $result;
+    }*/
 }

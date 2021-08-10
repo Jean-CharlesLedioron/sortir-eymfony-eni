@@ -19,10 +19,18 @@ class ProfilController extends AbstractController
     /**
      * @Route("/MonProfil", name= "MonProfil")
      */
-    public function MonProfil(Request $request,EntityManagerInterface $entityManager): Response
+    public function MonProfil(Request $request,EntityManagerInterface $entityManager, ParticipantRepository $participantRepository): Response
     {
         $profil = new Participant();
+        $userconnected = $this->getUser();
+        $profil -> setPseudo($userconnected->getPseudo());
+        $profil -> setPrenom($userconnected->getPrenom());
+        $profil -> setNom($userconnected->getNom());
+        $profil -> setTelephone($userconnected->getTelephone());
+        $profil -> setMail($userconnected->getMail());
+        $profil -> setCampus($userconnected -> getCampus());
         $profilForm = $this->createForm(ParticipantType::class,$profil);
+
         $profilForm->handleRequest($request);
 
         if ($profilForm->isSubmitted() && $profilForm->isValid()){
@@ -47,7 +55,7 @@ class ProfilController extends AbstractController
         }
 
         return $this->render('user/Profil.html.twig',[
-            "profil" => $participant
+            "participant" => $participant
         ]);
     }
 }
