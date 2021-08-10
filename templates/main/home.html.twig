@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body %}
+    <form>
     <div>
         <h3>Filtrer les sorties</h3>
         <label for="campusChoice">Campus</label>
@@ -13,5 +14,27 @@
                 <option id="{{ campus.id }}">{{ campus.nom }}</option>
             {% endfor%}
         </select>
+        <label for="search">Le nom de la sortie contient :</label>
+        <input id="search" name="search" type="search" placeholder="search">
+
+    </br>
+        <label for="dateStart">Entre</label>
+        <input type="date" id="dateStart">
+        <label for="dateEnd">Et</label>
+        <input type="date" id="dateEnd">
     </div>
+    <div>
+    <input type="checkbox" id="cbEventOrganisator" name="cbEventOrganisator">
+    <label for="cbEventOrganisator">Sorties dont je suis l'organisateur.rice</label>
+    <input type="checkbox" id="cbEventSignIn" name="cbEventSignIn">
+    <label for="cbEventSignIn">Sorties auxquelles je suis inscrit.e</label>
+    <input type="checkbox" id="cbEventNotSignIn" name="cbEventNotSignIn">
+    <label for="cbEventNotSignIn">Sorties auxquelles je ne suis pas inscrit.e</label>
+    <input type="checkbox" id="cbEventPassed" name="cbEventPassed">
+    <label for="cbEventPassed">Sorties Passées</label>
+    </div>
+    <div>
+        <button type="submit" id="selector">SEARCH</button>
+    </div>
+    </form>
 {% endblock %}
