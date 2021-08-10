@@ -1,8 +1,9 @@
 <nav>
+    <a href="{{ path('main_home') }}"><h1 id="logo" class="nav-h1">Sortir.com</h1></a>
     <ul>
-        <li><a href="#" title="Home">Accueil</a></li>
-        <li><a href="#" title="Profil">Mon Profil</a></li>
-        <li><a href="#" title="All series">Se déconnecter</a></li>
+        <li><a href="{{ path('main_home') }}" title="Home">Accueil</a></li>
+        <li><a href="{{ path('profil_MonProfil') }}" title="Profil">Mon Profil</a></li>
+        <li><a href="#" title="Logout">Se déconnecter</a></li>
         {% if app.user %}
             {% if is_granted("ROLE_ADMIN") %}
                 <li><a href="#" title="City">Villes</a></li>
