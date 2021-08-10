@@ -6,6 +6,12 @@
 
 {% block body %}
     <div>
-        Ici est créé un test d'affichage
+        <h3>Filtrer les sorties</h3>
+        <label for="campusChoice">Campus</label>
+        <select name="campusChoice" id="campusChoice">
+            {% for campus in campusList %}
+                <option id="{{ campus.id }}">{{ campus.nom }}</option>
+            {% endfor%}
+        </select>
     </div>
 {% endblock %}
