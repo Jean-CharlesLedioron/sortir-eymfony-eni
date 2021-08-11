@@ -5,13 +5,96 @@
 {% endblock %}
 
 {% block body %}
-    <div>
-        <h3>Filtrer les sorties</h3>
-        <label for="campusChoice">Campus</label>
-        <select name="campusChoice" id="campusChoice">
-            {% for campus in campusList %}
-                <option id="{{ campus.id }}">{{ campus.nom }}</option>
-            {% endfor%}
-        </select>
+    <div class="container">
+        {{ form_start(form) }}
+        <div class="row">
+            <div class="col-md-4">
+                {{ form_row(form.campus) }}
+                {{ form_row(form.search) }}
+                {{ form_row(form.startDate) }}
+                {{ form_row(form.EndDate) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(form.Organisator) }}
+                {{ form_row(form.signIn) }}
+                {{ form_row(form.notSignIn) }}
+                {{ form_row(form.passed) }}
+            </div>
+            {{ form_end(form) }}
+            <div class="col md 2">
+                <button type="submit" id="searchFilter" class="btn btn-primary w-100">Rechercher</button>
+            </div>
+        </div>
+
     </div>
+
+    <div class="container">
+        <table>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>Clotûre</th>
+                <th>Inscrits/places</th>
+                <th>Etat</th>
+                <th>Inscrit</th>
+                <th>Organisateur</th>
+                <th>Actions</th>
+            </tr>
+            {% for sortie in sorties %}
+                <tr>
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.dateHeureDebut | date }}</td>
+                    <td>{{ sortie.dateLimiteInscription | date }}</td>
+                    <td><h5>Afficher</h5></td>
+                    <td>{{ sortie.etat.libelle }}</td>
+                    <td><h5>Afficher</h5></td>
+                    <td>{{ sortie.participantOrganisateur.pseudo }}({{ sortie.participantOrganisateur.nom }})</td>
+                    <td><h5>Afficher</h5></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <a href="{{ path('sortie_create') }}" class="btn btn-primary">Créer une sortie</a>
+
+
+
+
+
+
+
+
+
+    {# <form> #}
+    {# <div> #}
+    {# <h3>Filtrer les sorties</h3> #}
+    {# <label for="campusChoice">Campus</label> #}
+    {# <select name="campusChoice" id="campusChoice"> #}
+    {# {% for campus in campusList %} #}
+    {# <option id="{{ campus.id }}">{{ campus.nom }}</option> #}
+    {# {% endfor%} #}
+    {# </select> #}
+    {# <label for="search">Le nom de la sortie contient :</label> #}
+    {# <input id="search" name="search" type="search" placeholder="search"> #}
+
+    {# </br> #}
+    {# <label for="dateStart">Entre</label> #}
+    {# <input type="date" id="dateStart"> #}
+    {# <label for="dateEnd">Et</label> #}
+    {# <input type="date" id="dateEnd"> #}
+    {# </div> #}
+    {# <div> #}
+    {# <input type="checkbox" id="cbEventOrganisator" name="cbEventOrganisator"> #}
+    {# <label for="cbEventOrganisator">Sorties dont je suis l'organisateur.rice</label> #}
+    {# <input type="checkbox" id="cbEventSignIn" name="cbEventSignIn"> #}
+    {# <label for="cbEventSignIn">Sorties auxquelles je suis inscrit.e</label> #}
+    {# <input type="checkbox" id="cbEventNotSignIn" name="cbEventNotSignIn"> #}
+    {# <label for="cbEventNotSignIn">Sorties auxquelles je ne suis pas inscrit.e</label> #}
+    {# <input type="checkbox" id="cbEventPassed" name="cbEventPassed"> #}
+    {# <label for="cbEventPassed">Sorties Passées</label> #}
+    {# </div> #}
+    {# <div> #}
+    {# <button type="submit" id="selector">SEARCH</button> #}
+    {# </div> #}
+    {# </form> #}
 {% endblock %}
