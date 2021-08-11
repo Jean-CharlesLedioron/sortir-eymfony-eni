@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} | Sortie
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="d-flex flex-column align-items-center">
+            <h1 class="flex-row">Afficher une sortie</h1>
+            <div class="flex-row">
+                <div class="flex-column">
+                    Nom de la sortie : {{ sortieDisplay.nom }}
+                    Date et heure de la sortie : {{ sortieDisplay.dateHeureDebut | format_datetime(locale='fr')}}
+                    Date limite d'inscription : {{ sortieDisplay.dateLimiteInscription | format_datetime(locale='fr')}}
+                    Nombre de place : {{ sortieDisplay.nbInscriptionsMax }}
+                    Durée : {{ sortieDisplay.duree }} minutes
+                    Descriptions et infos : {{ sortieDisplay.infosSortie }}
+                </div>
+                <div class="flex-column">
+                    Campus : {{ sortieDisplay.campusSiteOrganisateur }}
+                    Lieu : {{ sortieDisplay.lieu }}
+                    Rue : {{ sortieDisplay.lieu.rue }}
+                    Code Postal : {{ sortieDisplay.lieu.codePostal }}
+                    Latitude : {{ sortieDisplay.lieu.latitude }}
+                    Longitude : {{ sortieDisplay.lieu.longitude }}
+                </div>
+            </div>
+            <a class="btn btn-primary" href="{{ path('main_home') }}" role="button">Retour Accueil</a>
+        </div>
+    </div>
+{% endblock %}

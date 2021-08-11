@@ -6,6 +6,7 @@ use App\Entity\Etat;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\CreateSortieType;
+use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,6 +49,22 @@ class SortieController extends AbstractController
 
         return $this->render('sortie/create.html.twig', [
             'sortieForm' => $sortieForm->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/display/{id}", name="display")
+     */
+    public function display(int $id, SortieRepository $sortieRepository): Response
+    {
+        $sortieDisplay = $sortieRepository->find($id);
+
+        if (!$sortieDisplay){
+            throw $this->createNotFoundException("Cette sortie n'a pas était trouvé");
+        }
+
+        return $this->render('sortie/display.html.twig',[
+            "sortieDisplay" => $sortieDisplay
         ]);
     }
 }

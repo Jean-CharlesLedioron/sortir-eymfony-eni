@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/profil", name="profil_")
@@ -19,27 +20,30 @@ class ProfilController extends AbstractController
     /**
      * @Route("/MonProfil", name= "MonProfil")
      */
-    public function MonProfil(Request $request,EntityManagerInterface $entityManager, ParticipantRepository $participantRepository): Response
+    public function MonProfil(Request $request,
+                              UserPasswordEncoderInterface $passwordEncoder,
+                              EntityManagerInterface $entityManager
+    ): Response
     {
-        $profil = new Participant();
-        $userconnected = $this->getUser();
-        $profil -> setPseudo($userconnected->getPseudo());
-        $profil -> setPrenom($userconnected->getPrenom());
-        $profil -> setNom($userconnected->getNom());
-        $profil -> setTelephone($userconnected->getTelephone());
-        $profil -> setMail($userconnected->getMail());
-        $profil -> setCampus($userconnected -> getCampus());
-        $profilForm = $this->createForm(ParticipantType::class,$profil);
+        $participant = $this->getUser();
 
-        $profilForm->handleRequest($request);
+        $participantForm = $this->createForm(ParticipantType::class, $participant);
 
-        if ($profilForm->isSubmitted() && $profilForm->isValid()){
-            $entityManager->persist($profil);
+        $participantForm->handleRequest($request);
+
+        if ($participantForm->isSubmitted() && $participantForm->isValid()){
+            $password =$passwordEncoder->encodePassword($participant,$participantForm->get('motPasse')->getData());
+            $participant->setMotPasse($password);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($participant);
             $entityManager->flush();
+
+            $this->addFlash('success','Vos données ont bien était modifié !');
+            return $this->redirectToRoute('main_home');
         }
 
         return $this->render('user/MonProfil.html.twig', [
-            'participantForm' => $profilForm->createView()
+            'participantForm' => $participantForm->createView()
         ]);
     }
 
