@@ -19,6 +19,15 @@ class ParticipantRepository extends ServiceEntityRepository
         parent::__construct($registry, Participant::class);
     }
 
+    public function findOneByPseudoOrEmail($username)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.pseudo = :username OR p.mail = :username')
+            ->setParameter('username', $username)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     // /**
     //  * @return Participant[] Returns an array of Participant objects
     //  */
