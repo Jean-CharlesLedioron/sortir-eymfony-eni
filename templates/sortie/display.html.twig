@@ -7,26 +7,43 @@
 {% block body %}
     <div class="container">
         <div class="d-flex flex-column align-items-center">
-            <h1 class="flex-row">Afficher une sortie</h1>
-            <div class="flex-row">
-                <div class="flex-column">
-                    Nom de la sortie : {{ sortieDisplay.nom }}
-                    Date et heure de la sortie : {{ sortieDisplay.dateHeureDebut | format_datetime(locale='fr')}}
-                    Date limite d'inscription : {{ sortieDisplay.dateLimiteInscription | format_datetime(locale='fr')}}
-                    Nombre de place : {{ sortieDisplay.nbInscriptionsMax }}
-                    Durée : {{ sortieDisplay.duree }} minutes
-                    Descriptions et infos : {{ sortieDisplay.infosSortie }}
+            <h1 class="flex-row">Sortie de {{ sortieDisplay.participantOrganisateur.pseudo }}</h1>
+            <div class="row">
+                <div class="col-7">
+                    Nom de la sortie : {{ sortieDisplay.nom }}<br>
+                    Date et heure de la sortie : {{ sortieDisplay.dateHeureDebut | date('d/m/Y H:i') }}<br>
+                    Date limite d'inscription : {{ sortieDisplay.dateLimiteInscription | date('d/m/Y')}}<br>
+                    Nombre de place : {{ sortieDisplay.nbInscriptionsMax }}<br>
+                    Durée : {{ sortieDisplay.duree }} minutes<br>
+                    Descriptions et infos :<br>
+                    <div class="flex-column">
+                        {{ sortieDisplay.infosSortie }}
+                    </div>
                 </div>
-                <div class="flex-column">
-                    Campus : {{ sortieDisplay.campusSiteOrganisateur }}
-                    Lieu : {{ sortieDisplay.lieu }}
-                    Rue : {{ sortieDisplay.lieu.rue }}
-                    Code Postal : {{ sortieDisplay.lieu.codePostal }}
-                    Latitude : {{ sortieDisplay.lieu.latitude }}
+                <div class="col-5">
+                    Campus : {{ sortieDisplay.campusSiteOrganisateur.nom }}<br>
+                    Lieu : {{ sortieDisplay.lieu.nom }}<br>
+                    Rue : {{ sortieDisplay.lieu.rue }}<br>
+                    Code Postal : {{ sortieDisplay.lieu.ville.codePostal }}<br>
+                    Latitude : {{ sortieDisplay.lieu.latitude }}<br>
                     Longitude : {{ sortieDisplay.lieu.longitude }}
                 </div>
             </div>
-            <a class="btn btn-primary" href="{{ path('main_home') }}" role="button">Retour Accueil</a>
+            <div class="row">
+                <div class="col-7">
+                    Listes des participants :
+                    {% if sortieDisplay.participantInscrit.count !=0 %}
+                        {% for inscrit in sortieDisplay.participantInscrit %}
+                            {{ inscrit.nom }}
+                        {% endfor %}
+                    {% else %}
+                        Aucun participant n'est inscrit à cette sortie !
+                    {% endif %}
+                </div>
+                <div class="col-5">
+                    <a class="btn btn-primary" href="{{ path('main_home') }}" role="button">Retour Accueil</a>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
