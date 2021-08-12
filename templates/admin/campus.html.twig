@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} | Campus
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="d-flex flex-column align-items-center">
+            <h1 class="flex-row">Liste des Campus</h1>
+        </div>
+
+        <div class="row">
+            {{ form_start(formCampus) }}
+            <div class="col md 4">
+                {{ form_row(formCampus.campusForm) }}
+                <button>Rechercher</button>
+            </div>
+            {{ form_end(formCampus) }}
+        </div>
+
+        <div class="container">
+            <table id="dtDynamicVerticalScrollExample" class="table table-striped table-bordered table-sm ">
+                <tr>
+                    <th>Campus</th>
+                    <th>Action</th>
+                </tr>
+                {% for camp in campus %}
+                    <tr>
+                        <td>{{ camp.nom }}</td>
+                        <td>Action</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    {{ form_start(addcampusForm) }}
+                    <td>{{ form_row(addcampusForm.nom) }}</td>
+                    <td><button>Ajouter</button></td>
+                    {{ form_end(addcampusForm) }}
+                </tr>
+            </table>
+        </div>
+    </div>
+{% endblock %}

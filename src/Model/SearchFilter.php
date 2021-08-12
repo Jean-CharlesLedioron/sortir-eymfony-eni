@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use App\Entity\Campus;
+use App\Entity\Ville;
 use App\Repository\SearchFilterRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,6 +36,36 @@ class SearchFilter
 
 
     private $passed =false;
+
+
+    private $ville;
+
+    private $campusForm;
+
+
+    public function getCampusForm(): ?string
+    {
+        return $this->campusForm;
+    }
+
+
+    public function setCampusForm($campusForm): self
+    {
+        $this->campusForm = $campusForm;
+    }
+
+
+    public function getVille(): ?string
+    {
+        return $this->ville;
+    }
+
+
+    public function setVille($ville): self
+    {
+        $this->ville = $ville;
+    }
+
 
     public function getId(): ?int
     {

@@ -62,7 +62,7 @@
                                 <a href="#">Modifier</a> - <a href="#">Publier</a>
                             {% endif %}
                         {% elseif sortie.etat.libelle == 'Ouverte' %}
-                            <a href="#">Afficher</a>
+                            <a href="{{ path('sortie_display', {'id': sortie.id}) }}">Afficher</a>
                             {% for participant in sortie.participantInscrit %}
                                 {% if app.user == participant %}
                                     - <a href="#">Se désister</a>
@@ -74,7 +74,7 @@
                                 - <a href="#">Annuler</a>
                             {% endif %}
                         {% elseif sortie.etat.libelle == 'Cloturée' %}
-                            <a href="#">Afficher</a>
+                            <a href="{{ path('sortie_display', {'id': sortie.id}) }}">Afficher</a>
                             {% for participant in sortie.participantInscrit %}
                                 {% if app.user == participant %}
                                     <a href="#">Se désister</a>
@@ -84,11 +84,11 @@
                                 - <a href="#">Annuler</a>
                             {% endif %}
                         {% elseif sortie.etat.libelle == 'Activité en cours' %}
-                            <a href="#">Afficher</a>
+                            <a href="{{ path('sortie_display', {'id': sortie.id}) }}">Afficher</a>
                         {% elseif sortie.etat.libelle == 'Passée' %}
-                            <a href="#">Afficher</a>
+                            <a href="{{ path('sortie_display', {'id': sortie.id}) }}">Afficher</a>
                         {% elseif sortie.etat.libelle == 'Annulée' %}
-                            <a href="#">Afficher</a>
+                            <a href="{{ path('sortie_display', {'id': sortie.id}) }}">Afficher</a>
                         {% endif %}
                     </td>
                 </tr>

@@ -29,20 +29,30 @@
                     Longitude : {{ sortieDisplay.lieu.longitude }}
                 </div>
             </div>
-            <div class="row">
-                <div class="col-7">
-                    Listes des participants :
-                    {% if sortieDisplay.participantInscrit.count !=0 %}
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-7">
+                Listes des participants :<br>
+                {% if sortieDisplay.participantInscrit.count !=0 %}
+                    <table id="dtDynamicVerticalScrollExample" class="table table-striped table-bordered table-sm ">
+                        <tr>
+                            <th>Pseudo</th>
+                            <th>Nom</th>
+                        </tr>
                         {% for inscrit in sortieDisplay.participantInscrit %}
-                            {{ inscrit.nom }}
+                            <tr>
+                                <td>{{ inscrit.pseudo }}</td>
+                                <td>{{ inscrit.prenom }} {{ inscrit.nom | upper }}</td>
+                            </tr>
                         {% endfor %}
-                    {% else %}
-                        Aucun participant n'est inscrit à cette sortie !
-                    {% endif %}
-                </div>
-                <div class="col-5">
-                    <a class="btn btn-primary" href="{{ path('main_home') }}" role="button">Retour Accueil</a>
-                </div>
+                    </table>
+                {% else %}
+                    Aucun participant n'est inscrit à cette sortie !
+                {% endif %}
+            </div>
+            <div class="col-5 align-items-center">
+                <a class="btn btn-primary" href="{{ path('main_home') }}" role="button">Retour Accueil</a>
             </div>
         </div>
     </div>
