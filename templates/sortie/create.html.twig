@@ -4,7 +4,7 @@
 
     <h1 class="m-3">Créer une sortie</h1>
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-5">
             {{ form_start(sortieForm) }}
             {{ form_row(sortieForm.nom) }}
             {{ form_row(sortieForm.dateHeureDebut) }}
@@ -13,7 +13,7 @@
             {{ form_row(sortieForm.duree) }}
             {{ form_row(sortieForm.infosSortie) }}
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-5">
             {{ form_row(sortieForm.campusSiteOrganisateur) }}
             {{ form_row(sortieForm.ville) }}
             {{ form_row(sortieForm.codePostal) }}
@@ -23,13 +23,96 @@
             {{ form_row(sortieForm.longitude) }}
         </div>
     </div>
+
     <div class="row">
         <div class="col-sm-4 offset-sm-3">
-            <a href="{{ path('sortie_create') }}"><button type="submit" class="btn btn-success">Enregistrer</button> </a>
+            <button type="submit" class="btn btn-success" name="publish" value="save">Enregistrer</button>
+        </div>
+        <div class="col-sm-4 offset-sm-3">
+            <button type="submit" class="btn btn-success" name="publish" value="publish">Publier la sortie</button>
             {{ form_end(sortieForm) }}
         </div>
         <div class="col-sm-4">
             <a href="{{ path('main_home') }}" class="btn btn-danger">Annuler</a>
         </div>
     </div>
+
+    <script>
+        let $ville = $(`#create_sortie_ville`);
+        $ville.change(function () {
+            $.ajax({
+                url: "{{ path('sortie_list_lieu') }}",
+                type: "GET",
+                dataType: "JSON",
+                data: {
+                    "villeId": $ville.val(),
+                },
+                success: function (lieux) {
+                    let lieuSelect = $('#create_sortie_lieu');
+                    lieuSelect.html('');
+                    lieuSelect.append('<option value> Choisissez un lieu de '
+                        + $ville.find("option:selected").text()
+                        + ' ...</option>');
+                    $.each(lieux, function (key, lieu) {
+                        lieuSelect.append('<option value="' + lieu.id + '">' + lieu.name + '</option>');
+                        let cdpSelect = $('#create_sortie_codePostal');
+                        cdpSelect.html('');
+                        cdpSelect.val(this.cdp);
+                        console.log(this);
+                    });
+                },
+                error: function (err) {
+                    alert("Une erreur s'est produite en chargeant les données...");
+                }
+            });
+        });
+        let $lieu = $('#create_sortie_lieu');
+        $lieu.change(function () {
+            $.ajax({
+                url: "{{ path('sortie_lieu_details') }}",
+                type: "GET",
+                dataType: "JSON",
+                data: {
+                    "lieuId": $lieu.val()
+                },
+                success: function (retourArray) {
+                    $.each(retourArray, function (key, valeur) {
+                        let rueSelect = $('#create_sortie_rue');
+                        rueSelect.html('');
+                        rueSelect.val(this.rue);
+                        let latitudeSelect = $('#create_sortie_latitude');
+                        latitudeSelect.html('');
+                        latitudeSelect.val(this.latitude);
+                        let longitudeSelect = $('#create_sortie_longitude');
+                        longitudeSelect.html('');
+                        longitudeSelect.val(this.longitude);
+                    });
+                },
+                error: function (err) {
+                    alert("Une erreur s'est produite en chargeant les données...");
+                }
+            });
+        });
+    </script>
+
+    {# <script> #}
+    {# window.onload = () => { #}
+    {# let ville = document.querySelector("#create_sortie_ville"); #}
+
+    {# ville.addEventListener("change", function (){ #}
+    {# let form = this.closest("form"); #}
+    {# console.log(form) #}
+    {# //let data = this.name + "=" + this.value; #}
+
+    {# // fetch(form.action, { #}
+    {# //     method: form.getAttribute("method"), #}
+    {# //     body: data, #}
+    {# //     header: { #}
+    {# //         "Content-Type": "application/x-www-form-urlencoded;" + #}
+    {# //             "charset:utf-8" #}
+    {# //     } #}
+    {# // }) #}
+    {# }) #}
+    {# } #}
+    {# </script> #}
 {% endblock %}
