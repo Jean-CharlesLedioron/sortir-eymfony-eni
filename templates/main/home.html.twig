@@ -29,7 +29,8 @@
     </div>
 
     <div class="container">
-        <table>
+        <table id="dtDynamicVerticalScrollExample" class="table table-striped table-bordered table-sm "
+               >
             <tr>
                 <th>Nom de la sortie</th>
                 <th>Date de la sortie</th>
@@ -45,11 +46,51 @@
                     <td>{{ sortie.nom }}</td>
                     <td>{{ sortie.dateHeureDebut | date }}</td>
                     <td>{{ sortie.dateLimiteInscription | date }}</td>
-                    <td><h5>Afficher</h5></td>
+                    <td><h5>{{ sortie.participantInscrit.count }}/{{ sortie.nbInscriptionsMax }}</h5></td>
                     <td>{{ sortie.etat.libelle }}</td>
-                    <td><h5>Afficher</h5></td>
+                    <td>
+                        {% for participant in sortie.participantInscrit %}
+                            {% if app.user == participant %}
+                                <h5>X</h5>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td>{{ sortie.participantOrganisateur.pseudo }}({{ sortie.participantOrganisateur.nom }})</td>
-                    <td><h5>Afficher</h5></td>
+                    <td>
+                        {% if sortie.etat.libelle == 'Créée' %}
+                            {% if app.user == sortie.participantOrganisateur %}
+                                <a href="#">Modifier</a> - <a href="#">Publier</a>
+                            {% endif %}
+                        {% elseif sortie.etat.libelle == 'Ouverte' %}
+                            <a href="#">Afficher</a>
+                            {% for participant in sortie.participantInscrit %}
+                                {% if app.user == participant %}
+                                    - <a href="#">Se désister</a>
+                                {% else %}
+                                    - <a href="#">S'inscrire</a>
+                                {% endif %}
+                            {% endfor %}
+                            {% if app.user == sortie.participantOrganisateur %}
+                                - <a href="#">Annuler</a>
+                            {% endif %}
+                        {% elseif sortie.etat.libelle == 'Cloturée' %}
+                            <a href="#">Afficher</a>
+                            {% for participant in sortie.participantInscrit %}
+                                {% if app.user == participant %}
+                                    <a href="#">Se désister</a>
+                                {% endif %}
+                            {% endfor %}
+                            {% if app.user == sortie.participantOrganisateur %}
+                                - <a href="#">Annuler</a>
+                            {% endif %}
+                        {% elseif sortie.etat.libelle == 'Activité en cours' %}
+                            <a href="#">Afficher</a>
+                        {% elseif sortie.etat.libelle == 'Passée' %}
+                            <a href="#">Afficher</a>
+                        {% elseif sortie.etat.libelle == 'Annulée' %}
+                            <a href="#">Afficher</a>
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </table>
@@ -65,36 +106,13 @@
 
 
 
-    {# <form> #}
-    {# <div> #}
-    {# <h3>Filtrer les sorties</h3> #}
-    {# <label for="campusChoice">Campus</label> #}
-    {# <select name="campusChoice" id="campusChoice"> #}
-    {# {% for campus in campusList %} #}
-    {# <option id="{{ campus.id }}">{{ campus.nom }}</option> #}
-    {# {% endfor%} #}
-    {# </select> #}
-    {# <label for="search">Le nom de la sortie contient :</label> #}
-    {# <input id="search" name="search" type="search" placeholder="search"> #}
-
-    {# </br> #}
-    {# <label for="dateStart">Entre</label> #}
-    {# <input type="date" id="dateStart"> #}
-    {# <label for="dateEnd">Et</label> #}
-    {# <input type="date" id="dateEnd"> #}
-    {# </div> #}
-    {# <div> #}
-    {# <input type="checkbox" id="cbEventOrganisator" name="cbEventOrganisator"> #}
-    {# <label for="cbEventOrganisator">Sorties dont je suis l'organisateur.rice</label> #}
-    {# <input type="checkbox" id="cbEventSignIn" name="cbEventSignIn"> #}
-    {# <label for="cbEventSignIn">Sorties auxquelles je suis inscrit.e</label> #}
-    {# <input type="checkbox" id="cbEventNotSignIn" name="cbEventNotSignIn"> #}
-    {# <label for="cbEventNotSignIn">Sorties auxquelles je ne suis pas inscrit.e</label> #}
-    {# <input type="checkbox" id="cbEventPassed" name="cbEventPassed"> #}
-    {# <label for="cbEventPassed">Sorties Passées</label> #}
-    {# </div> #}
-    {# <div> #}
-    {# <button type="submit" id="selector">SEARCH</button> #}
-    {# </div> #}
-    {# </form> #}
+<script>
+    $(document).ready(function () {
+        $('#dtDynamicVerticalScrollExample').DataTable({
+            "scrollY": "50vh",
+            "scrollCollapse": true,
+        });
+        $('.dataTables_length').addClass('bs-select');
+    });
+</script>
 {% endblock %}

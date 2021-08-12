@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\SearchFilter;
+use App\Model\SearchFilter;
 use App\Form\SearchFilterType;
 use App\Repository\CampusRepository;
 use App\Repository\SortieRepository;

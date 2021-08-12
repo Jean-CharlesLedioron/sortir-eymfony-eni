@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Participant;
-use App\Entity\SearchFilter;
+use App\Model\SearchFilter;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -47,32 +47,32 @@ class SortieRepository extends ServiceEntityRepository
         if(!empty($searchFilter->getStartDate()))
         {
             $query=$query
-                ->andWhere('s.dateHeureDebut <= :dateMin')
+                ->andWhere('s.dateHeureDebut >= :dateMin')
                 ->setParameter('dateMin', $searchFilter->getStartDate());
         }
         if(!empty($searchFilter->getEndDate()))
         {
             $query=$query
-                ->andWhere('s.dateHeureDebut => :dateMax')
-                ->setParameter('dateMin', $searchFilter->getEndDate());
+                ->andWhere('s.dateHeureDebut <= :dateMax')
+                ->setParameter('dateMax', $searchFilter->getEndDate());
         }
         if(!empty($searchFilter->getOrganisator()))
         {
             $query=$query
                 ->andWhere('s.participantOrganisateur = :organisator')
-                ->setParameter('organisator', $user->getId());
+                ->setParameter('organisator', $user);
         }
         if(!empty($searchFilter->getSignIn()))
         {
             $query=$query
-                ->andWhere('s.participantInscrit = :inscrit ')
-                ->setParameter('inscrit', $user->getId());
+                ->andWhere(':inscrit MEMBER OF s.participantInscrit ')
+                ->setParameter('inscrit', $user);
         }
         if(!empty($searchFilter->getNotSignIn()))
         {
             $query=$query
-                ->andWhere('s.participantInscrit <> :nonInscrit ')
-                ->setParameter('nonInscrit', $user->getId());
+                ->andWhere(':nonInscrit NOT MEMBER OF s.participantInscrit')
+                ->setParameter('nonInscrit', $user);
         }
         if(!empty($searchFilter->getPassed()))
         {

@@ -1,60 +1,39 @@
 <?php
 
-namespace App\Entity;
+namespace App\Model;
 
+use App\Entity\Campus;
 use App\Repository\SearchFilterRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=SearchFilterRepository::class)
- */
+
 class SearchFilter
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=100, nullable=true)
-     */
+
     private $campus;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+
     private $search;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     */
+
     private $startDate;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     */
+
     private $EndDate;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+
     private $Organisator =false;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+
     private $signIn =false;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+
     private $notSignIn =false;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
+
     private $passed =false;
 
     public function getId(): ?int
@@ -62,12 +41,12 @@ class SearchFilter
         return $this->id;
     }
 
-    public function getCampus(): ?string
+    public function getCampus(): ?Campus
     {
         return $this->campus;
     }
 
-    public function setCampus(?string $campus): self
+    public function setCampus(?Campus $campus): self
     {
         $this->campus = $campus;
 
