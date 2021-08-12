@@ -12,7 +12,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -24,6 +23,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CreateSortieType extends AbstractType
 {
+    private $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -56,55 +62,76 @@ class CreateSortieType extends AbstractType
                 'label' => 'Campus : ',
                 'class' => Campus::class,
                 'choice_label' => 'nom',
-            ])
-            ->add('lieu', EntityType::class, [
-                'label' => 'Lieu : ',
-                'class' => Lieu::class,
-                'choice_label' => 'nom',
-            ])
-            ->add('ville', EntityType::class, [
-                'class' => Ville::class,
-                'required' => true,
-                'mapped' => false,
-                'label' => 'Ville :',
-                'placeholder' => 'Choisissez une ville',
-                'choice_label' => 'nom',
-            ])
-            ->add('lieu', EntityType::class, [
-                'class' => Lieu::class,
-                'required' => true,
-                'label' => 'Lieu :',
-                'placeholder' => 'Choisissez un lieu',
-                'choice_label' => 'nom',
-            ])
-            ->add('rue', EntityType::class, [
-                'class' => Lieu::class,
-                'choice_label' => 'rue',
-                'mapped' => false,
-                'attr' => ['readonly' => true,]
-            ])
-            ->add('codePostal', EntityType::class, [
-                'class' => Ville::class,
-                'choice_label' => 'codePostal',
-                'mapped' => false,
-                'attr' => ['readonly' => true,
-                ]
-            ])
-            ->add('latitude', EntityType::class, [
-                'class' => Lieu::class,
-                'choice_label' => 'latitude',
-                'mapped' => false,
-                'attr' => ['readonly' => true,
-                ]
-            ])
-            ->add('longitude', EntityType::class, [
-                'class' => Lieu::class,
-                'choice_label' => 'longitude',
-                'mapped' => false,
-                'attr' => ['readonly' => true,
-                ]
             ]);
+
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) {
+                $form = $event->getForm();
+                $data = $event->getData();
+
+                $ville = $this->em->getRepository(Ville::class)->find($data['ville']);
+//            $codePostal = (null === $ville) ? [] : $ville->getCodePostal();
+                $this->addElements($form, $ville);
+
+            });
+        $builder->addEventListener(FormEvents::POST_SET_DATA,
+            function (FormEvent $event) {
+                $form = $event->getForm();
+                $data = $event->getData();
+
+                $ville = $data->getLieu() ? $data->getLieu()->getVille() : null;
+//            $codePostal = (null === $ville) ? [] : $ville->getCodePostal();
+                $this->addElements($form, $ville);
+
+            });
     }
+
+    protected function addElements(FormInterface $form, Ville $ville = null)
+    {
+        $form->add('ville', EntityType::class, [
+            'class' => Ville::class,
+            'required' => true,
+            'mapped' => false,
+            'label' => 'Ville :',
+            'placeholder' => 'Choisissez une ville',
+            'choice_label' => 'nom',
+        ]);
+
+        $form->add('codePostal', TextType::class, [
+            'mapped' => false,
+            'attr' => ['readonly' => true,],
+        ]);
+        $form->add('lieu', EntityType::class, [
+            'class' => Lieu::class,
+            'required' => true,
+            'label' => 'Lieu :',
+            'placeholder' => 'Choisissez un lieu',
+            'choice_label' => 'nom',
+        ]);
+        $form->add('rue', TextType::class, [
+            'mapped' => false,
+            'attr' => ['readonly' => true,]
+        ]);
+        $form->add('latitude', TextType::class, [
+            'mapped' => false,
+            'attr' => ['readonly' => true,]
+        ]);
+        $form->add('longitude', TextType::class, [
+            'mapped' => false,
+            'attr' => ['readonly' => true,]
+        ]);
+    }
+
+
+//
+//        $builder->get('ville')->addEventListener(
+//            FormEvents::POST_SUBMIT,
+//            function (FormEvent $event) use ($formModified){
+//                $ville = $event->getForm()->getData();
+//                $formModified($event->getForm()->getParent(), $ville);
+//            }
+//        );
 
     public function configureOptions(OptionsResolver $resolver)
     {
