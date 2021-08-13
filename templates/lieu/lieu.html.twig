@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h1 class="m-3">Créer un lieu</h1>
+    <div class="row">
+        {{ form_start(lieuForm) }}
+        {{ form_row(lieuForm.ville) }}
+        {{ form_row(lieuForm.nom) }}
+        {{ form_row(lieuForm.rue) }}
+        {{ form_row(lieuForm.latitude) }}
+        {{ form_row(lieuForm.longitude) }}
+
+        <div class="row">
+            <div class="col-sm-4 offset-sm-3">
+                <button class="btn btn-success" type="submit">Ajouter</button>
+                {{ form_end(lieuForm) }}
+            </div>
+            <div class="col-sm-4">
+                <a href="{{ path('sortie_create') }}" class="btn btn-danger">Annuler</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

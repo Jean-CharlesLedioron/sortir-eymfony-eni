@@ -18,6 +18,9 @@
             {{ form_row(sortieForm.ville) }}
             {{ form_row(sortieForm.codePostal) }}
             {{ form_row(sortieForm.lieu) }}
+            <div class="col-sm-5">
+                    <a href="{{ path('lieu_create') }}" class="btn btn-primary">Ajouter un lieu</a>
+            </div>
             {{ form_row(sortieForm.rue) }}
             {{ form_row(sortieForm.latitude) }}
             {{ form_row(sortieForm.longitude) }}
@@ -26,7 +29,7 @@
 
     <div class="row">
         <div class="col-sm-4 offset-sm-3">
-            <button type="submit" class="btn btn-success" name="publish" value="save">Enregistrer</button>
+            <button type="submit" class="btn btn-success" name="save" value="save">Enregistrer</button>
         </div>
         <div class="col-sm-4 offset-sm-3">
             <button type="submit" class="btn btn-success" name="publish" value="publish">Publier la sortie</button>
