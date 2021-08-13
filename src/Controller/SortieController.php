@@ -7,7 +7,9 @@ use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Entity\Ville;
+use App\Form\CancelSortieType;
 use App\Form\CreateSortieType;
+use App\Form\EditSortieType;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -66,69 +68,140 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("listLieuxByVille", name="list_lieu")
+     * @Route ("/cancel/{id}", name="cancel")
+     * @param EntityManagerInterface $entityManager
+     * @param Request $request
+     * @param $id
+     * @return Response
      */
-    public function listLieuxByVille(Request $request): JsonResponse
+    function cancelSortie(EntityManagerInterface $entityManager, Request $request, $id): Response
     {
 
-        $villeId = $request->query->get('villeId');
-        $ville = $this->getDoctrine()->getManager()->getRepository(Ville::class)->find($villeId);
-        $cdp = $ville->getCodePostal();
+        $sortie = $this->getDoctrine()->getRepository(Sortie::class)->find($id);
 
-        $lieux = $this->getDoctrine()->getManager()->getRepository(Lieu::class)->findLieuByVille($villeId);
 
-        $responseArray = array();
-        foreach ($lieux as $lieu) {
-            $responseArray[] = array(
+        $cancelForm = $this->createForm(CancelSortieType::class, $sortie);
+        $cancelForm->handleRequest($request);
+
+        if ($cancelForm->isSubmitted() && $cancelForm->isValid()) {
+            $etat = $this->getDoctrine()->getRepository(Etat::class)->findOneBy(['libelle' => 'Annulée']);
+            $sortie->setEtat($etat);
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'sortie annulée');
+            return $this->redirectToRoute('main_home');
+        }
+
+        return $this->render('sortie/cancel.html.twig', [
+            'cancelForm' => $cancelForm->createView(),
+        ]);
+    }
+
+    /**
+     * @Route ("/edit/{id}", name="edit")
+     * @param EntityManagerInterface $entityManager
+     * @param Request $request
+     * @param $id
+     * @return Response
+     */
+    function editSortie(EntityManagerInterface $entityManager, Request $request, $id): Response
+    {
+
+        $sortie = $this->getDoctrine()->getRepository(Sortie::class)->find($id);
+
+        $editForm = $this->createForm(EditSortieType::class, $sortie);
+        if (isset($_POST['save'])) {
+            $etat = $this->getDoctrine()->getRepository(Etat::class)->findOneBy(['libelle' => 'Créée']);
+            $sortie->setEtat($etat);
+        } else if (isset($_POST['publish'])) {
+            $etat = $this->getDoctrine()->getRepository(Etat::class)->findOneBy(['libelle' => 'Ouverte']);
+            $sortie->setEtat($etat);
+        } else if (isset($_POST['cancel'])) {
+            return $this->redirectToRoute('sortie_cancel', ['id' => $sortie->getId()]);
+        }
+        $editForm->handleRequest($request);
+        if ($editForm->isSubmitted()){
+            $entityManager=$this->getDoctrine()->getManager();
+
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+            $this->addFlash('success', 'sortie modifiée');
+            return $this->redirectToRoute('sortie_edit', ['id' => $sortie->getId()]);
+        }
+
+            return $this->render('sortie/edit.html.twig', [
+                'editForm' => $editForm->createView(),
+            ]);
+        }
+
+        /**
+         * @Route("listLieuxByVille", name="list_lieu")
+         */
+        public
+        function listLieuxByVille(Request $request): JsonResponse
+        {
+
+            $villeId = $request->query->get('villeId');
+            $ville = $this->getDoctrine()->getManager()->getRepository(Ville::class)->find($villeId);
+            $cdp = $ville->getCodePostal();
+
+            $lieux = $this->getDoctrine()->getManager()->getRepository(Lieu::class)->findLieuByVille($villeId);
+
+            $responseArray = array();
+            foreach ($lieux as $lieu) {
+                $responseArray[] = array(
+                    "id" => $lieu->getId(),
+                    "name" => $lieu->getNom(),
+                    "rue" => $lieu->getRue(),
+                    "latitude" => $lieu->getLatitude(),
+                    "longitude" => $lieu->getLongitude(),
+                    "cdp" => $cdp,
+
+                );
+            }
+            return new JsonResponse($responseArray);
+        }
+
+        /**
+         * @Route("lieuDetails", name="lieu_details")
+         * @param Request $request
+         * @return JsonResponse
+         */
+        public
+        function lieuDetails(Request $request): JsonResponse
+        {
+
+            $lieuId = $request->query->get('lieuId');
+            $lieu = $this->getDoctrine()->getManager()->getRepository(Lieu::class)->find($lieuId);
+
+            $retourArray = array();
+
+            $retourArray[] = array(
                 "id" => $lieu->getId(),
                 "name" => $lieu->getNom(),
                 "rue" => $lieu->getRue(),
                 "latitude" => $lieu->getLatitude(),
                 "longitude" => $lieu->getLongitude(),
-                "cdp" => $cdp,
-
             );
-        }
-        return new JsonResponse($responseArray);
-    }
-
-    /**
-     * @Route("lieuDetails", name="lieu_details")
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function lieuDetails(Request $request): JsonResponse
-    {
-
-        $lieuId = $request->query->get('lieuId');
-        $lieu = $this->getDoctrine()->getManager()->getRepository(Lieu::class)->find($lieuId);
-
-        $retourArray = array();
-
-        $retourArray[] = array(
-            "id" => $lieu->getId(),
-            "name" => $lieu->getNom(),
-            "rue" => $lieu->getRue(),
-            "latitude" => $lieu->getLatitude(),
-            "longitude" => $lieu->getLongitude(),
-        );
-        return new JsonResponse($retourArray);
-    }
-
-
-    /**
-     * @Route("/display/{id}", name="display")
-     */
-    public function display(int $id, SortieRepository $sortieRepository): Response
-    {
-        $sortieDisplay = $sortieRepository->find($id);
-
-        if (!$sortieDisplay){
-            throw $this->createNotFoundException("Cette sortie n'a pas était trouvé");
+            return new JsonResponse($retourArray);
         }
 
-        return $this->render('sortie/display.html.twig',[
-            "sortieDisplay" => $sortieDisplay
-        ]);
+
+        /**
+         * @Route("/display/{id}", name="display")
+         */
+        public
+        function display(int $id, SortieRepository $sortieRepository): Response
+        {
+            $sortieDisplay = $sortieRepository->find($id);
+
+            if (!$sortieDisplay) {
+                throw $this->createNotFoundException("Cette sortie n'a pas était trouvé");
+            }
+
+            return $this->render('sortie/display.html.twig', [
+                "sortieDisplay" => $sortieDisplay
+            ]);
+        }
     }
-}
