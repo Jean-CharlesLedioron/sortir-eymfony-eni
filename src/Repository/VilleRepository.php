@@ -32,4 +32,15 @@ class VilleRepository extends ServiceEntityRepository
         }
         return $query->getQuery()->getResult();
     }
+
+    public function removeCampus(Ville $ville){
+        $query = $this
+            ->createQueryBuilder('v')
+            ->delete()
+            ->where('v.id =:id')
+            ->setParameter('id',$ville->getId());
+
+
+        return $query->getQuery()->getResult();
+    }
 }

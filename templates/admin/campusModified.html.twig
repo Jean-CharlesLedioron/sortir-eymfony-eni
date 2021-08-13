@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} | Modification Campus
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="d-flex flex-column align-items-center">
+            <h1 class="flex-row">Modification du campus de {{ campus.nom }}</h1>
+            <div class="flex-row">
+                {{ form_start(campusForm) }}
+                {{ form_widget(campusForm) }}
+                <button>Enregister</button>
+                <a href="{{ path('admin_campus') }}" class="btn btn-danger">Annuler</a>
+                {{ form_end(campusForm) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

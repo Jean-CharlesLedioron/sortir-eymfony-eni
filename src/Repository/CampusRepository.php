@@ -28,8 +28,19 @@ class CampusRepository extends ServiceEntityRepository
         {
             $query=$query
                 ->andWhere('c.nom LIKE :campusForm')
-                ->setParameter('campusForm', "%{$searchFilter->getCampus()}%");
+                ->setParameter('campusForm', "%{$searchFilter->getCampusForm()}%");
         }
+        return $query->getQuery()->getResult();
+    }
+
+    public function removeCampus(Campus $campus){
+        $query = $this
+            ->createQueryBuilder('c')
+            ->delete()
+            ->where('c.id =:id')
+            ->setParameter('id',$campus->getId());
+
+
         return $query->getQuery()->getResult();
     }
 }

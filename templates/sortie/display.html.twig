@@ -43,7 +43,11 @@
                         {% for inscrit in sortieDisplay.participantInscrit %}
                             <tr>
                                 <td>{{ inscrit.pseudo }}</td>
-                                <td>{{ inscrit.prenom }} {{ inscrit.nom | upper }}</td>
+                                <td>
+                                    <a href="{{ path('profil_participant',{'id': inscrit.id}) }}">
+                                        {{ inscrit.prenom }} {{ inscrit.nom | upper }}
+                                    </a>
+                                </td>
                             </tr>
                         {% endfor %}
                     </table>

@@ -30,7 +30,7 @@
                     <tr>
                         <td>{{ ville.nom }}</td>
                         <td>{{ ville.codePostal }}</td>
-                        <td>Action</td>
+                        <td><a href="{{ path('admin_ville_modified', {'id': ville.id}) }}">Modifier</a> - <a href="{{ path('admin_ville_remove', {'id': ville.id}) }}">Supprimer</a></td>
                     </tr>
                 {% endfor %}
                 <tr>

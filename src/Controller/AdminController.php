@@ -6,7 +6,9 @@ use App\Entity\Campus;
 use App\Entity\Ville;
 use App\Form\AddCampusType;
 use App\Form\AddCityType;
+use App\Form\CampusModifiedType;
 use App\Form\CampusSearchType;
+use App\Form\CityModifiedType;
 use App\Form\VilleSearchType;
 use App\Model\SearchFilter;
 use App\Repository\CampusRepository;
@@ -41,12 +43,47 @@ class AdminController extends AbstractController
         if ($villeForm->isSubmitted() && $villeForm->isValid()){
             $entityManager->persist($ville);
             $entityManager->flush();
+            return $this->redirectToRoute('admin_ville');
         }
 
         return $this->render('admin/ville.html.twig', [
             'villes'=>$villes,
             'formVille'=>$form->createView(),
             'addvilleForm' => $villeForm->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/ville/remove/{id}", name= "ville_remove")
+     */
+    public function villeRemove(Ville $ville,VilleRepository $villeRepository, EntityManagerInterface $entityManager){
+        $ville = $villeRepository->removeCampus($ville);
+        return $this->redirectToRoute('admin_ville');
+    }
+
+    /**
+     * @Route("/ville/modified/{id}", name= "ville_modified")
+     */
+    public function villeModified(int $id,
+                                  Request $request,
+                                  EntityManagerInterface $entityManager,
+                                  VilleRepository $villeRepository
+    ):Response
+    {
+        $ville = $villeRepository->find($id);
+        $villeForm =  $this->createForm(CityModifiedType::class,$ville);
+        $villeForm->handleRequest($request);
+
+        if ($villeForm->isSubmitted() && $villeForm->isValid()){
+            $entityManager->persist($ville);
+            $entityManager->flush();
+            $this->addFlash('success','Vos données ont bien était modifié !');
+            return $this->redirectToRoute('admin_ville');
+        }
+
+        return $this->render('admin/villeModified.html.twig', [
+            'villeForm' => $villeForm->createView(),
+            'ville'=>$ville
         ]);
     }
 
@@ -68,12 +105,47 @@ class AdminController extends AbstractController
         if ($campusForm->isSubmitted() && $campusForm->isValid()){
             $entityManager->persist($camp);
             $entityManager->flush();
+            return $this->redirectToRoute('admin_campus');
         }
 
         return $this->render('admin/campus.html.twig', [
             'campus'=>$campus,
             'formCampus'=>$form->createView(),
             'addcampusForm' => $campusForm->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/campus/remove/{id}", name= "campus_remove")
+     */
+    public function campusRemove(Campus $campus, CampusRepository $campusRepository, EntityManagerInterface $entityManager){
+        $campus = $campusRepository->removeCampus($campus);
+        return $this->redirectToRoute('admin_campus');
+    }
+
+    /**
+     * @Route("/campus/modified/{id}", name= "campus_modified")
+     */
+    public function campusModified(int $id,
+                                  Request $request,
+                                  EntityManagerInterface $entityManager,
+                                  CampusRepository $campusRepository
+    ):Response
+    {
+        $campus = $campusRepository->find($id);
+        $campusForm =  $this->createForm(CampusModifiedType::class,$campus);
+        $campusForm->handleRequest($request);
+
+        if ($campusForm->isSubmitted() && $campusForm->isValid()){
+            $entityManager->persist($campus);
+            $entityManager->flush();
+            $this->addFlash('success','Vos données ont bien était modifié !');
+            return $this->redirectToRoute('admin_campus');
+        }
+
+        return $this->render('admin/campusModified.html.twig', [
+            'campusForm' => $campusForm->createView(),
+            'campus'=>$campus
         ]);
     }
 }

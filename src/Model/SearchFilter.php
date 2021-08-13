@@ -40,6 +40,7 @@ class SearchFilter
 
     private $ville;
 
+
     private $campusForm;
 
 
@@ -52,6 +53,8 @@ class SearchFilter
     public function setCampusForm($campusForm): self
     {
         $this->campusForm = $campusForm;
+
+        return $this;
     }
 
 
@@ -64,6 +67,8 @@ class SearchFilter
     public function setVille($ville): self
     {
         $this->ville = $ville;
+
+        return $this;
     }
 
 

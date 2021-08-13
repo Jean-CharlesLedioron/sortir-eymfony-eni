@@ -28,7 +28,7 @@
                 {% for camp in campus %}
                     <tr>
                         <td>{{ camp.nom }}</td>
-                        <td>Action</td>
+                        <td><a href="{{ path('admin_campus_modified', {'id': camp.id}) }}">Modifier</a> - <a href="{{ path('admin_campus_remove', {'id': camp.id}) }}">Supprimer</a></td>
                     </tr>
                 {% endfor %}
                 <tr>
