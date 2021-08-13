@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Campus;
+use App\Entity\Participant;
 use App\Entity\Ville;
 use App\Form\AddCampusType;
 use App\Form\AddCityType;
 use App\Form\CampusModifiedType;
 use App\Form\CampusSearchType;
 use App\Form\CityModifiedType;
+use App\Form\CreateUserType;
 use App\Form\VilleSearchType;
 use App\Model\SearchFilter;
 use App\Repository\CampusRepository;
@@ -19,6 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/admin", name= "admin_")
@@ -146,6 +149,34 @@ class AdminController extends AbstractController
         return $this->render('admin/campusModified.html.twig', [
             'campusForm' => $campusForm->createView(),
             'campus'=>$campus
+        ]);
+    }
+
+    /**
+     * @Route("/dashboard", name= "dashboard")
+     */
+    public function dashboardCreateUser(Request $request,
+                                        EntityManagerInterface $entityManager,
+                                        UserPasswordEncoderInterface $passwordEncoder
+    ):Response
+    {
+        $user = new Participant();
+        $userForm = $this->createForm(CreateUserType::class,$user);
+
+        $userForm->handleRequest($request);
+
+        if ($userForm->isSubmitted() && $userForm->isValid()){
+            $password =$passwordEncoder->encodePassword($user,$userForm->get('motPasse')->getData());
+            $user->setMotPasse($password);
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', "participant Ajouté! Good Job.");
+            return $this->redirectToRoute('admin_dashboard');
+        }
+
+        return $this->render('admin/dashboard.html.twig', [
+            'userForm'=>$userForm->createView()
         ]);
     }
 }

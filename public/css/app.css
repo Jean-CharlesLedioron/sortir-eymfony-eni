@@ -106,3 +106,16 @@ table.dataTable thead .sorting_desc_disabled:after,
 table.dataTable thead .sorting_desc_disabled:before {
     bottom: .5em;
 }
+
+.form-user-manuel {
+    padding: 20px;
+    border-radius: 5px;
+    background: linear-gradient(#97B7CD,#004982);
+    margin: 1rem 0;
+}
+.form-user-fichier {
+    padding: 20px;
+    border-radius: 5px;
+    background: linear-gradient(#97B7CD,#004982);
+    margin: 1rem 0;
+}

@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} | Dashboard
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-7">
+                <div class="form-user-manuel">
+                    Créer un Participant :<br>
+                    {{ form_start(userForm) }}
+                    {{ form_widget(userForm) }}
+                    <button>Enregistrer</button>
+                    {{ form_end(userForm) }}
+                </div>
+            </div>
+            <div class="col-5">
+                <div class="form-user-fichier">
+                    Créer un ou des participants avec un fichier .csv :
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
