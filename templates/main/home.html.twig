@@ -55,7 +55,7 @@
                             {% endif %}
                         {% endfor %}
                     </td>
-                    <td>{{ sortie.participantOrganisateur.pseudo }}({{ sortie.participantOrganisateur.nom }})</td>
+                    <td><a href="{{ path('profil_participant', {'id': sortie.participantOrganisateur.id}) }}">{{ sortie.participantOrganisateur.pseudo }}({{ sortie.participantOrganisateur.nom }})</a></td>
                     <td>
                         {% if sortie.etat.libelle == 'Créée' %}
                             {% if app.user == sortie.participantOrganisateur %}
