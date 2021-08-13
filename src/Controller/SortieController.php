@@ -196,12 +196,61 @@ class SortieController extends AbstractController
         {
             $sortieDisplay = $sortieRepository->find($id);
 
-            if (!$sortieDisplay) {
-                throw $this->createNotFoundException("Cette sortie n'a pas était trouvé");
-            }
-
-            return $this->render('sortie/display.html.twig', [
-                "sortieDisplay" => $sortieDisplay
-            ]);
+        if (!$sortieDisplay) {
+            throw $this->createNotFoundException("Cette sortie n'a pas était trouvé");
         }
+
+        return $this->render('sortie/display.html.twig', [
+            "sortieDisplay" => $sortieDisplay
+        ]);
     }
+
+    /**
+     * @Route("/sign/in/{id}", name="sign_in")
+     */
+    public function signIn(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $participant = $this->getUser();
+        $sortie = $this->getDoctrine()->getRepository(Sortie::class)->find($id);
+        if ($sortie->getEtat()->getLibelle() === 'Ouverte') {
+            $sortie->addParticipantInscrit($participant);
+            if ($sortie->getParticipantInscrit()->count() == $sortie->getNbInscriptionsMax()) {
+                $etat = $this->getDoctrine()->getRepository(Etat::class)->findOneBy(['libelle' => 'Cloturée']);
+                $sortie->setEtat($etat);
+            }
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            $this->addFlash('success', "Inscrit à l'activité : " . $sortie->getNom());
+        }
+
+        return $this->redirectToRoute('main_home');
+    }
+
+
+    /**
+     * @Route("/sign/out/{id}", name="sign_out")
+     */
+    public function signOut(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $participant = $this->getUser();
+        $sortie = $this->getDoctrine()->getRepository(Sortie::class)->find($id);
+        $dateJour = new \DateTime();
+        //dd($dateJour, $sortie);
+
+        if ($sortie->getEtat()->getLibelle() === 'Ouverte' || $sortie->getEtat()->getLibelle() === 'Cloturée') {
+            $sortie->removeParticipantInscrit($participant);
+            $dateLimit =$sortie->getDateLimiteInscription();
+            if ($dateLimit > $dateJour) {
+            $etat = $this->getDoctrine()->getRepository(Etat::class)->findOneBy(['libelle' => 'Ouverte']);
+            $sortie->setEtat($etat);
+             }
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            $this->addFlash('success', "Désinscrit de l'activité : " . $sortie->getNom());
+        }
+
+        return $this->redirectToRoute('main_home');
+    }
+}
