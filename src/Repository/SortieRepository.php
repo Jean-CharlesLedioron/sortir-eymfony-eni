@@ -2,10 +2,13 @@
 
 namespace App\Repository;
 
+use App\Entity\Etat;
 use App\Entity\Participant;
 use App\Model\SearchFilter;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -76,20 +79,55 @@ class SortieRepository extends ServiceEntityRepository
 
         return $query->getQuery()->getResult();
 
-        // return $this->findAll();
+
     }
 
-    public function addParticipantToSortie(Sortie $sortie, UserInterface $user)
+
+    /**
+     * Récupère toutes les sorties
+     * @return Sortie[]
+     */
+    public function findAllSorties(): array
     {
-//        $query = $this
-//            ->createQueryBuilder('s')
-//            ->
+        $query= $this->findAll();
+        return $query;
 
-
-//        $entityManager = $this->getEntityManager();
-//        $dql = "
-//            INSERT INTO `sortie_participant` (`sortie_id`, `participant_id`)
-//            VALUES ($sortie, $user)";
-//        $query = $entityManager->createQuery($dql);
     }
+
+    public function stateRefresh(EntityManagerInterface $entityManager){
+        $sorties = $this->findAllSorties();
+        foreach ($sorties as $sortie){
+            $etatSortie = $sortie->getEtat()->getLibelle();
+            $datetimeNow = new \DateTime();
+            $decalageUTC = 120;
+            $datetimeNow->add(new \DateInterval('PT'.$decalageUTC.'M'));
+            if ($etatSortie != 'Créée' or $etatSortie != 'Annulée' or $etatSortie != 'Passée')
+            {
+                if ($etatSortie === 'Ouverte'){
+                    if ($sortie->getDateLimiteInscription() <= $datetimeNow) {
+                        $etatSortie = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Cloturée']);
+                        $sortie->setEtat($etatSortie);
+                    }
+                }elseif ($etatSortie === 'Cloturée'){
+                    if ($sortie->getDateHeureDebut() <= $datetimeNow) {
+                        dump("plop");
+                        $etatSortie = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Activité en cours']);
+                        $sortie->setEtat($etatSortie);
+                    }
+                }elseif ($etatSortie === 'Activité en cours'){
+                    $dateEndEvent = $sortie->getDateHeureDebut();
+                    $duree=$sortie->getDuree();
+                    $dateEndEvent->add(new \DateInterval('PT'.$sortie->getDuree().'M'));
+                    if ($dateEndEvent <= $datetimeNow) {
+                        $etatSortie = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Passée']);
+                        $sortie->setEtat($etatSortie);
+//                        $entityManager->flush($sortie);
+                    }
+                }
+                $entityManager->flush($sortie);
+            }
+        }
+    }
+
+
 }

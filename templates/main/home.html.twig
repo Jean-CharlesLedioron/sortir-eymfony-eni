@@ -66,13 +66,11 @@
                             {% if sortie.participantInscrit.count == 0 %}
                                 - <a href="{{path('sortie_sign_in', {'id': sortie.id})}}">S'inscrire</a>
                             {% endif %}
-                            {% for participant in sortie.participantInscrit %}
-                                {% if app.user == participant %}
+                            {% if sortie.participantInscrit.contains(app.user) %}
                                     - <a href="{{path('sortie_sign_out', {'id': sortie.id})}}">Se désister</a>
-                                {% else %}
+                            {% else %}
                                     - <a href="{{path('sortie_sign_in', {'id': sortie.id})}}">S'inscrire</a>
-                                {% endif %}
-                            {% endfor %}
+                            {% endif %}
                             {% if app.user == sortie.participantOrganisateur %}
                                 - <a href="{{path('sortie_sign_out', {'id': sortie.id})}}">Annuler</a>
                             {% endif %}
