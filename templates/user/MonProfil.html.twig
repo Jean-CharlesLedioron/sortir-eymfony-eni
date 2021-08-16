@@ -8,7 +8,14 @@
     <div class="container">
         <div class="d-flex flex-column align-items-center">
             <h1 class="flex-row">Mon Profil</h1>
-            <div class="flex-row">
+        </div>
+        <div class="row">
+            <div class="col-4">
+                {% if participant.photo is not empty %}
+                    <img src="{{ asset('upload/'~participant.photo.nom) }}" alt="{{ participant.photo.nom }}" id="ppUser">
+                {% endif %}
+            </div>
+            <div class="col-8">
                 {{ form_start(participantForm) }}
                 {{ form_widget(participantForm) }}
                 <button>Enregister</button>

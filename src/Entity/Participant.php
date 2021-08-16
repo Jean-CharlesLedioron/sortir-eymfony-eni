@@ -71,6 +71,11 @@ class Participant implements UserInterface
      */
     private $sorties;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Photo::class, mappedBy="participant", cascade={"persist", "remove"})
+     */
+    private $photo;
+
     public function __construct()
     {
         $this->sorties = new ArrayCollection();
@@ -279,5 +284,22 @@ class Participant implements UserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getPhoto(): ?Photo
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(Photo $photo): self
+    {
+        // set the owning side of the relation if necessary
+        if ($photo->getParticipant() !== $this) {
+            $photo->setParticipant($this);
+        }
+
+        $this->photo = $photo;
+
+        return $this;
     }
 }

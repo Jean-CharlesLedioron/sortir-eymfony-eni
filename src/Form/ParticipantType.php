@@ -4,8 +4,10 @@ namespace App\Form;
 
 use App\Entity\Campus;
 use App\Entity\Participant;
+use App\Entity\Photo;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -48,6 +50,12 @@ class ParticipantType extends AbstractType
             ])
 
             //TODO ajouter le systeme pour la photo
+            ->add('photo',FileType::class,[
+                'label' => 'Ajouter une photo de profil :',
+                'multiple' => false,
+                'mapped' => false,
+                'required' => false,
+            ])
         ;
     }
 

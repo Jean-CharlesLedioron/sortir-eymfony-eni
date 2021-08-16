@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Participant;
+use App\Entity\Photo;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,16 +23,48 @@ class ProfilController extends AbstractController
      */
     public function MonProfil(Request $request,
                               UserPasswordEncoderInterface $passwordEncoder,
-                              EntityManagerInterface $entityManager
+                              EntityManagerInterface $entityManager,
+                              ParticipantRepository $participantRepository
     ): Response
     {
         $participant = $this->getUser();
+
+        $pr=$participantRepository->find($participant->getId());
 
         $participantForm = $this->createForm(ParticipantType::class, $participant);
 
         $participantForm->handleRequest($request);
 
+
         if ($participantForm->isSubmitted() && $participantForm->isValid()){
+
+            $photo = $participantForm->get('photo')->getData();
+
+            if ($photo) {
+                $fichier = md5(uniqid()).'.'.$photo->guessExtension();
+                if ($pr->getPhoto()){
+
+
+                    $image=$participant->getPhoto();
+                    $nom = $image->getNom();
+                    unlink($this->getParameter('photos_directory').'/'.$nom);
+
+                    $entityManager=$this->getDoctrine()->getManager();
+                    $entityManager->remove($image);
+                    $entityManager->flush();
+                }
+
+
+                $img = new Photo();
+                $img->setNom($fichier);
+                $participant->setPhoto($img);
+                $photo->move(
+                    $this->getParameter('photos_directory'),
+                    $fichier
+                );
+            }
+
+
             $password =$passwordEncoder->encodePassword($participant,$participantForm->get('motPasse')->getData());
             $participant->setMotPasse($password);
             $entityManager = $this->getDoctrine()->getManager();
@@ -43,7 +76,9 @@ class ProfilController extends AbstractController
         }
 
         return $this->render('user/MonProfil.html.twig', [
-            'participantForm' => $participantForm->createView()
+            'participant'=> $participant,
+            'participantForm' => $participantForm->createView(),
+
         ]);
     }
 

@@ -8,18 +8,28 @@
     <div class="container">
         <div class="d-flex flex-column align-items-center">
             <h1 class="flex-row">{{ participant.pseudo }}</h1>
-            <div class="flex-row">
-                Prénom : {{ participant.prenom }}<br>
-                Nom : {{ participant.nom }}<br>
-                {% if participant.telephone %}
-                    Téléphone : {{ participant.telephone }}<br>
-                {% else %}
-                    Téléphone : Le numéro de ce participant n'a pas était fourni <br>
-                {% endif %}
-                Email : {{ participant.mail }}<br>
-                Campus : {{ participant.campus.nom }}<br>
-                <a class="btn btn-primary" href="{{ path('main_home') }}" role="button">Retour Accueil</a>
-            </div>
         </div>
+            <div class="row">
+                <div class="col-4">
+                    {% if participant.photo is not empty %}
+                        <img src="{{ asset('upload/'~participant.photo.nom) }}" alt="{{ participant.photo.nom }}" id="ppUser">
+                    {% endif %}
+                </div>
+                <div class="col-8">
+                    Prénom : {{ participant.prenom }}<br>
+                    Nom : {{ participant.nom }}<br>
+                    {% if participant.telephone %}
+                        Téléphone : {{ participant.telephone }}<br>
+                    {% else %}
+                        Téléphone : Le numéro de ce participant n'a pas était fourni <br>
+                    {% endif %}
+                    Email : {{ participant.mail }}<br>
+                    Campus : {{ participant.campus.nom }}<br>
+                    <div>
+                        <a class="btn btn-primary" href="{{ path('main_home') }}" role="button">Retour Accueil</a>
+                    </div>
+                </div>
+            </div>
+
     </div>
 {% endblock %}

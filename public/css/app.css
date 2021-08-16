@@ -119,3 +119,7 @@ table.dataTable thead .sorting_desc_disabled:before {
     background: linear-gradient(#97B7CD,#004982);
     margin: 1rem 0;
 }
+
+#ppUser {
+    max-height: 200px;
+}
