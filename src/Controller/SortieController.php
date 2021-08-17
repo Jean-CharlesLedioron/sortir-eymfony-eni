@@ -40,7 +40,7 @@ class SortieController extends AbstractController
         if (isset($_POST['save'])) {
             $etat = $this->getDoctrine()->getRepository(Etat::class)->findOneBy(['libelle' => 'Créée']);
             $sortie->setEtat($etat);
-        } else if (isset($_POST['publish'])) {
+        } else if (isset($_POST['publish'] )) {
             $etat = $this->getDoctrine()->getRepository(Etat::class)->findOneBy(['libelle' => 'Ouverte']);
             $sortie->setEtat($etat);
         }
@@ -65,6 +65,24 @@ class SortieController extends AbstractController
         return $this->render('sortie/create.html.twig', [
             'sortieForm' => $sortieForm->createView(),
         ]);
+    }
+
+    /**
+     * @Route ("/publish/{id}", name="publish")
+     * @param EntityManagerInterface $entityManager
+     * @param Request $request
+     * @param $id
+     * @return Response
+     */
+    public function publishSortie(EntityManagerInterface $entityManager, Request $request, $id): Response{
+        $sortie=$this->getDoctrine()->getRepository(Sortie::class)->find($id);
+        $etat = $this->getDoctrine()->getRepository(Etat::class)->findOneBy(['libelle' => 'Ouverte']);
+        $sortie->setEtat($etat);
+        $entityManager->persist($sortie);
+        $entityManager->flush();
+
+        $this->addFlash('success','sortie publiée');
+        return $this->redirectToRoute('main_home');
     }
 
     /**
