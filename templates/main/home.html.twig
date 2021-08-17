@@ -63,9 +63,6 @@
                             {% endif %}
                         {% elseif sortie.etat.libelle == 'Ouverte' %}
                             <a href="{{path('sortie_display', {'id': sortie.id})}}">Afficher</a>
-                            {% if sortie.participantInscrit.count == 0 %}
-                                - <a href="{{path('sortie_sign_in', {'id': sortie.id})}}">S'inscrire</a>
-                            {% endif %}
                             {% if sortie.participantInscrit.contains(app.user) %}
                                     - <a href="{{path('sortie_sign_out', {'id': sortie.id})}}">Se désister</a>
                             {% else %}
