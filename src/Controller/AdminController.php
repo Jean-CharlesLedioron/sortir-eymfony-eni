@@ -14,6 +14,7 @@ use App\Form\CreateUserType;
 use App\Form\VilleSearchType;
 use App\Model\SearchFilter;
 use App\Repository\CampusRepository;
+use App\Repository\ParticipantRepository;
 use App\Repository\VilleRepository;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,7 +32,10 @@ class AdminController extends AbstractController
     /**
      * @Route("/ville", name= "ville")
      */
-    public function ville(EntityManagerInterface $entityManager,VilleRepository $villeRepository, Request $request): Response
+    public function ville(EntityManagerInterface $entityManager,
+                          VilleRepository $villeRepository,
+                          Request $request
+    ): Response
     {
         //sys filtre
         $searchFilter = new SearchFilter();
@@ -59,7 +63,11 @@ class AdminController extends AbstractController
     /**
      * @Route("/ville/remove/{id}", name= "ville_remove")
      */
-    public function villeRemove(Ville $ville,VilleRepository $villeRepository, EntityManagerInterface $entityManager){
+    public function villeRemove(Ville $ville,
+                                VilleRepository $villeRepository,
+                                EntityManagerInterface $entityManager
+    )
+    {
         $ville = $villeRepository->removeCampus($ville);
         return $this->redirectToRoute('admin_ville');
     }
@@ -93,7 +101,10 @@ class AdminController extends AbstractController
     /**
      * @Route("/campus", name= "campus")
      */
-    public function campus(EntityManagerInterface $entityManager,CampusRepository  $campusRepository, Request $request): Response
+    public function campus(EntityManagerInterface $entityManager,
+                           CampusRepository  $campusRepository,
+                           Request $request
+    ): Response
     {
         //sys filtre
         $searchFilter = new SearchFilter();
@@ -121,7 +132,11 @@ class AdminController extends AbstractController
     /**
      * @Route("/campus/remove/{id}", name= "campus_remove")
      */
-    public function campusRemove(Campus $campus, CampusRepository $campusRepository, EntityManagerInterface $entityManager){
+    public function campusRemove(Campus $campus,
+                                 CampusRepository $campusRepository,
+                                 EntityManagerInterface $entityManager
+    )
+    {
         $campus = $campusRepository->removeCampus($campus);
         return $this->redirectToRoute('admin_campus');
     }
@@ -156,12 +171,15 @@ class AdminController extends AbstractController
      * @Route("/dashboard", name= "dashboard")
      */
     public function dashboardCreateUser(Request $request,
+                                        ParticipantRepository $participantRepository,
                                         EntityManagerInterface $entityManager,
                                         UserPasswordEncoderInterface $passwordEncoder
     ):Response
     {
         $user = new Participant();
         $userForm = $this->createForm(CreateUserType::class,$user);
+
+        $participant=$participantRepository->findAll();
 
         $userForm->handleRequest($request);
 
@@ -176,7 +194,37 @@ class AdminController extends AbstractController
         }
 
         return $this->render('admin/dashboard.html.twig', [
+            'participants'=>$participant,
             'userForm'=>$userForm->createView()
         ]);
+    }
+
+
+    /**
+     * @Route("/dashboard/remove/{id}", name= "dashboard_remove")
+     */
+    public function dashboardRemove(Participant $participant,
+                                    ParticipantRepository $participantRepository,
+                                    EntityManagerInterface $entityManager
+    )
+    {
+        $participant = $participantRepository->removeUser($participant);
+        $this->addFlash('success', "participant supprimé!");
+        return $this->redirectToRoute('admin_dashboard');
+    }
+
+    /**
+     * @Route("/dashboard/desactive/{id}", name= "dashboard_desactive")
+     */
+    public function dashboardDesactive(Participant $participant, EntityManagerInterface $entityManager)
+    {
+        if ($etat=$entityManager->getRepository(Participant::class)->findOneBy(['actif'=>'1'])){
+            $participant->setActif(0);
+            $entityManager->flush();
+            $this->addFlash('success', "participant désactivé!");
+        }else{
+            $this->addFlash('warning', "participant déjà désactivé");
+        }
+        return $this->redirectToRoute('admin_dashboard');
     }
 }
