@@ -192,8 +192,9 @@ class SortieController extends AbstractController
          * @Route("/display/{id}", name="display")
          */
         public
-        function display(int $id, SortieRepository $sortieRepository): Response
+        function display(int $id, SortieRepository $sortieRepository, EntityManagerInterface $entityManager): Response
         {
+            $sortieRepository->stateRefresh($entityManager);
             $sortieDisplay = $sortieRepository->find($id);
 
         if (!$sortieDisplay) {

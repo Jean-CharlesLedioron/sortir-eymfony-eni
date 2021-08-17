@@ -105,10 +105,10 @@ class SortieRepository extends ServiceEntityRepository
             {
                 if ($etatSortie === 'Ouverte'){
                     if ($sortie->getDateLimiteInscription() <= $datetimeNow) {
-                        $etatSortie = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Cloturée']);
+                        $etatSortie = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Clôturée']);
                         $sortie->setEtat($etatSortie);
                     }
-                }elseif ($etatSortie === 'Cloturée'){
+                }elseif ($etatSortie === 'Clôturée'){
                     if ($sortie->getDateHeureDebut() <= $datetimeNow) {
                         dump("plop");
                         $etatSortie = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Activité en cours']);
