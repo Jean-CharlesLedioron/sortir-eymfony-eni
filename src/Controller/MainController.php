@@ -19,6 +19,7 @@ class MainController extends AbstractController
      */
     public function home(SortieRepository $sortieRepository, Request $request, EntityManagerInterface $entityManager) : Response
     {
+
         $searchFilter = new SearchFilter();
         $form = $this->createForm(SearchFilterType::class,$searchFilter);
         $form->handleRequest($request);

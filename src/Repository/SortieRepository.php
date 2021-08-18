@@ -47,7 +47,7 @@ class SortieRepository extends ServiceEntityRepository
         }
         if (!empty($searchFilter->getStartDate())) {
             $query = $query
-                ->andWhere('s.dateHeureDebut >= :dateMin')
+                ->andWhere('s.etat  >= :dateMin')
                 ->setParameter('dateMin', $searchFilter->getStartDate());
         }
         if (!empty($searchFilter->getEndDate())) {
@@ -72,8 +72,8 @@ class SortieRepository extends ServiceEntityRepository
         }
         if (!empty($searchFilter->getPassed())) {
             $query = $query
-                ->andWhere('s.dateLimiteInscription > :date ')
-                ->setParameter('date', 'NOW()');
+                ->andWhere('s.etat = :passed ')
+                ->setParameter('passed', "5");
         }
 
 
@@ -132,7 +132,7 @@ class SortieRepository extends ServiceEntityRepository
     public function findOrganisateurId($id)
     {
         $queryBuilder = $this->createQueryBuilder('s');
-        $queryBuilder->where('s.participant_organisateur = :id')
+        $queryBuilder->where('s.participantOrganisateur = :id')
             ->setParameter('id',$id);
         $query= $queryBuilder->getQuery();
         $result= $query->getResult();
