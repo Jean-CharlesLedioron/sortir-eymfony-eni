@@ -23,7 +23,7 @@ class Photo
     private $nom;
 
     /**
-     * @ORM\OneToOne(targetEntity=Participant::class, inversedBy="photo")
+     * @ORM\OneToOne(targetEntity=Participant::class, inversedBy="photo", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $participant;

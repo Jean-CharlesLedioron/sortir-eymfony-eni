@@ -15,6 +15,7 @@ use App\Form\VilleSearchType;
 use App\Model\SearchFilter;
 use App\Repository\CampusRepository;
 use App\Repository\ParticipantRepository;
+use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -204,11 +205,16 @@ class AdminController extends AbstractController
      * @Route("/dashboard/remove/{id}", name= "dashboard_remove")
      */
     public function dashboardRemove(Participant $participant,
-                                    ParticipantRepository $participantRepository,
+                                    SortieRepository $sortieRepository,
                                     EntityManagerInterface $entityManager
     )
     {
-        $participant = $participantRepository->removeUser($participant);
+        $sorties = $sortieRepository->findOrganisateurId($participant->getId());
+        foreach ($sorties as $sortie){
+            $entityManager->remove($sortie);
+        }
+        $entityManager->remove($participant);
+        $entityManager->flush();
         $this->addFlash('success', "participant supprimé!");
         return $this->redirectToRoute('admin_dashboard');
     }

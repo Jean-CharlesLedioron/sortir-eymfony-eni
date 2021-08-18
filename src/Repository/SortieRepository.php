@@ -129,5 +129,15 @@ class SortieRepository extends ServiceEntityRepository
         }
     }
 
+    public function findOrganisateurId($id)
+    {
+        $queryBuilder = $this->createQueryBuilder('s');
+        $queryBuilder->where('s.participant_organisateur = :id')
+            ->setParameter('id',$id);
+        $query= $queryBuilder->getQuery();
+        $result= $query->getResult();
+        return $result ;
+    }
+
 
 }
