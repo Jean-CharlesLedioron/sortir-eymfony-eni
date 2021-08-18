@@ -25,6 +25,10 @@ a:hover {
     color: #97B7CD;
 }
 
+#affiche-noir {
+    color: black;
+}
+
 body > .container {
     display: flex;
     flex-direction: column;
