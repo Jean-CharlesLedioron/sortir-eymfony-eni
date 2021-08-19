@@ -7,37 +7,36 @@
 {% block body %}
     <div class="container">
         <div class="d-flex flex-column align-items-center">
-            <h1 class="flex-row">Sortie de {{ sortieDisplay.participantOrganisateur.pseudo }}</h1>
-            <div class="row">
-                <div class="col-3" id="affiche-noir">Nom de la sortie :</div>
-                <div class="col-4">{{ sortieDisplay.nom }}</div>
-                <div class="col-2" id="affiche-noir">Campus :</div>
-                <div class="col-3">{{ sortieDisplay.campusSiteOrganisateur.nom }}</div>
-
-                <div class="col-3" id="affiche-noir">Date et heure de la sortie :</div>
-                <div class="col-4">{{ sortieDisplay.dateHeureDebut | date('d/m/Y H:i') }}</div>
-                <div class="col-2" id="affiche-noir">Lieu :</div>
-                <div class="col-3">{{ sortieDisplay.lieu.nom }}</div>
-
-                <div class="col-3" id="affiche-noir">Date limite d'inscription :<br></div>
-                <div class="col-4">{{ sortieDisplay.dateLimiteInscription | date('d/m/Y')}}<br></div>
-                <div class="col-2" id="affiche-noir">Rue :<br></div>
-                <div class="col-3">{{ sortieDisplay.lieu.rue }}<br></div>
-
-                <div class="col-3" id="affiche-noir">Nombre de place :<br></div>
-                <div class="col-4">{{ sortieDisplay.nbInscriptionsMax }}<br></div>
-                <div class="col-2" id="affiche-noir">Code Postal :<br></div>
-                <div class="col-3">{{ sortieDisplay.lieu.ville.codePostal }}<br></div>
-
-                <div class="col-3" id="affiche-noir">Durée :<br></div>
-                <div class="col-4">{{ sortieDisplay.duree }} minutes<br></div>
-                <div class="col-2" id="affiche-noir">Latitude :<br></div>
-                <div class="col-3">{{ sortieDisplay.lieu.latitude }}<br></div>
-
-                <div class="col-3" id="affiche-noir">Descriptions et infos :<br></div>
-                <div class="col-4">{{ sortieDisplay.infosSortie }}<br></div>
-                <div class="col-2" id="affiche-noir">Longitude :<br></div>
-                <div class="col-3">{{ sortieDisplay.lieu.longitude }}<br></div>
+            <h1 class="flex-row">{{ sortieDisplay.nom }} de {{ sortieDisplay.participantOrganisateur.pseudo }}</h1>
+            <div class="row align-items-center">
+                <div class=" row col-md-8 align-items-center">
+                    <div class="col-md-4" id="affiche-noir">Nom de la sortie :</div>
+                    <div class="col-md-8">{{ sortieDisplay.nom }}</div>
+                    <div class="col-md-4" id="affiche-noir">Date et heure de la sortie :</div>
+                    <div class="col-md-8">{{ sortieDisplay.dateHeureDebut | date('d/m/Y H:i') }}</div>
+                    <div class="col-md-4" id="affiche-noir">Date limite d'inscription :<br></div>
+                    <div class="col-md-8">{{ sortieDisplay.dateLimiteInscription | date('d/m/Y') }}<br></div>
+                    <div class="col-md-4" id="affiche-noir">Nombre de place :<br></div>
+                    <div class="col-md-8">{{ sortieDisplay.nbInscriptionsMax }}<br></div>
+                    <div class="col-md-4" id="affiche-noir">Durée :<br></div>
+                    <div class="col-md-8">{{ sortieDisplay.duree }} minutes<br></div>
+                    <div class="col-md-4" id="affiche-noir">Descriptions et infos :<br></div>
+                    <div class="col-md-8">{{ sortieDisplay.infosSortie }}<br></div>
+                </div>
+                <div class="row col-md-4">
+                    <div class="col-md-6" id="affiche-noir">Campus :</div>
+                    <div class="col-md-6">{{ sortieDisplay.campusSiteOrganisateur.nom }}</div>
+                    <div class="col-md-6" id="affiche-noir">Lieu :</div>
+                    <div class="col-md-6">{{ sortieDisplay.lieu.nom }}</div>
+                    <div class="col-md-6" id="affiche-noir">Rue :<br></div>
+                    <div class="col-md-6">{{ sortieDisplay.lieu.rue }}<br></div>
+                    <div class="col-md-6" id="affiche-noir">Code Postal :<br></div>
+                    <div class="col-md-6">{{ sortieDisplay.lieu.ville.codePostal }}<br></div>
+                    <div class="col-md-6" id="affiche-noir">Latitude :<br></div>
+                    <div class="col-md-6">{{ sortieDisplay.lieu.latitude }}<br></div>
+                    <div class="col-md-6" id="affiche-noir">Longitude :<br></div>
+                    <div class="col-md-6">{{ sortieDisplay.lieu.longitude }}<br></div>
+                </div>
             </div>
         </div>
         <br>

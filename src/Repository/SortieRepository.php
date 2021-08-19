@@ -31,7 +31,8 @@ class SortieRepository extends ServiceEntityRepository
      */
     public function findSearch(SearchFilter $searchFilter, UserInterface $user): array
     {
-
+        $datetimeArchivage = new \DateTime();
+        $datetimeArchivage->modify('-30 days');
         $query = $this
             ->createQueryBuilder('s')
             ->select('s');
@@ -75,6 +76,9 @@ class SortieRepository extends ServiceEntityRepository
                 ->andWhere('s.etat = :passed ')
                 ->setParameter('passed', "5");
         }
+        $query = $query
+        ->andWhere('s.dateHeureDebut > :archiver ')
+        ->setParameter('archiver', $datetimeArchivage );
 
 
         return $query->getQuery()->getResult();
@@ -108,20 +112,19 @@ class SortieRepository extends ServiceEntityRepository
                         $etatSortie = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Clôturée']);
                         $sortie->setEtat($etatSortie);
                     }
-                }elseif ($etatSortie === 'Clôturée'){
+                }
+                if ($etatSortie === 'Clôturée'){
                     if ($sortie->getDateHeureDebut() <= $datetimeNow) {
-                        dump("plop");
                         $etatSortie = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Activité en cours']);
                         $sortie->setEtat($etatSortie);
                     }
-                }elseif ($etatSortie === 'Activité en cours'){
+                }
+                if ($etatSortie === 'Activité en cours'){
                     $dateEndEvent = $sortie->getDateHeureDebut();
-                    $duree=$sortie->getDuree();
                     $dateEndEvent->add(new \DateInterval('PT'.$sortie->getDuree().'M'));
                     if ($dateEndEvent <= $datetimeNow) {
                         $etatSortie = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => 'Passée']);
                         $sortie->setEtat($etatSortie);
-//                        $entityManager->flush($sortie);
                     }
                 }
                 $entityManager->flush($sortie);

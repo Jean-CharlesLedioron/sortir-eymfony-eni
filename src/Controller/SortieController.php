@@ -81,7 +81,7 @@ class SortieController extends AbstractController
         $entityManager->persist($sortie);
         $entityManager->flush();
 
-        $this->addFlash('success','sortie publiée');
+        $this->addFlash('success','Sortie publié');
         return $this->redirectToRoute('main_home');
     }
 

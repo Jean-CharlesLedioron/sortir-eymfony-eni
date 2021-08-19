@@ -12,6 +12,7 @@
 
 {% endblock %}
 {% block body %}
+    {% form_theme form 'foundation_5_layout.html.twig' %}
     <div class="container">
         {{ form_start(form) }}
         <div class="row">
@@ -21,14 +22,14 @@
                 {{ form_row(form.startDate) }}
                 {{ form_row(form.EndDate) }}
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4" id="form_selector">
                 {{ form_row(form.Organisator) }}
                 {{ form_row(form.signIn) }}
                 {{ form_row(form.notSignIn) }}
                 {{ form_row(form.passed) }}
             </div>
             {{ form_end(form) }}
-            <div class="col md 2">
+            <div class="col md 2" id="form_submit">
                 <button type="submit" id="searchFilter" class="btn btn-primary w-100">Rechercher</button>
             </div>
         </div>
@@ -72,8 +73,8 @@
                     <td style="text-align: center">
                     {% if sortie.etat.libelle == 'Créée' %}
                         {% if app.user == sortie.participantOrganisateur %}
-                            <a href="{{ path('sortie_edit', {'id': sortie.id}) }} ">Modifier</a> - <a
-                                href="{{ path('sortie_create') }}">Publier</a>
+                            <a href="{{ path('sortie_edit', {'id': sortie.id}) }} ">Modifier</a>
+                            - <a href="{{ path('sortie_publish', {'id': sortie.id}) }}">Publier</a>
                         {% endif %}
                         {% if  app.user.administrateur == 1 %}
                             - <a href="#">Annuler</a>

@@ -128,6 +128,16 @@ label {
     #ppUser {
         max-height: 150px;
     }
+
+}
+
+@media screen and (min-width: 800px){
+    #form_selector{
+        margin-top: 65px;
+    }
+    #form_submit{
+        margin-top: 135px;
+    }
 }
 
 
